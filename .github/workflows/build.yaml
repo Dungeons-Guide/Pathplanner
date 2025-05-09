@@ -26,7 +26,7 @@ jobs:
             flag: -DCMAKE_CXX_FLAGS="-m64"
           - os: ubuntu-24.04
             compiler: gcc-14
-            package: gcc-14
+            package: gcc-14 gcc-multilib g++-multilib libc6-dev-i386
             binary: ./build/libdptsp.so
             upload_name: x86_64_libdptsp.so
             flag: -DCMAKE_CXX_FLAGS="-m32"
