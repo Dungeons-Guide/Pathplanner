@@ -11,23 +11,31 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            compiler: gcc-14
+            compiler: gcc-13
             name: mingw-w64
-            version: 11.2.0
+            version: 13.2.0
             binary: ./build/dptsp.dll
             upload_name: x86_64_dptsp.dll
+            flag: -CMAKE_CXX_FLAGS="-m32"
+          - os: windows-latest
+            compiler: gcc-13
+            name: mingw-w64
+            version: 13.2.0
+            binary: ./build/dptsp.dll
+            upload_name: x64_dptsp.dll
+            flag: -CMAKE_CXX_FLAGS="-m64"
           - os: ubuntu-24.04
             compiler: gcc-14
             package: gcc-14
             binary: ./build/libdptsp.so
             upload_name: x86_64_libdptsp.so
-            flag: -DCFLAGS="-m32" -DCXXFLAGS="-m32"
+            flag: -CMAKE_CXX_FLAGS="-m32"
           - os: ubuntu-24.04
             compiler: gcc-14
             package: gcc-14
             binary: ./build/libdptsp.so
             upload_name: x64_libdptsp.so
-            flag: -DCFLAGS="-m64" -DCXXFLAGS="-m64"
+            flag: -CMAKE_CXX_FLAGS="-m64"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
@@ -45,7 +53,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPULER=${{ matrix.compiler}} ..
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPULER=${{ matrix.compiler}} ${{matrix.flag}} ..
           cmake --build ./
 
       - name: Upload Build Artifact
