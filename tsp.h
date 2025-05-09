@@ -74,7 +74,12 @@ struct VisitedSet {
     bool operator <(const VisitedSet& y) const {
         return std::tie(requireBitSet, orBitSet) < std::tie(y.requireBitSet, y.orBitSet);
     }
+    bool operator ==(const VisitedSet& y) const {
+        return requireBitSet == y.requireBitSet && orBitSet == y.orBitSet;
+    }
 };
+
+
 
 typedef pair<VisitedSet, int> Key;
 typedef array<double, 3> Vec3;

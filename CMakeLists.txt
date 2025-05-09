@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.27)
 project(dptsp)
 
 
+set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 set(JAVA_AWT_LIBRARY NotNeeded)
 set(JAVA_AWT_INCLUDE_PATH NotNeeded)
 
@@ -15,3 +16,4 @@ add_library(dptsp SHARED
         tsp.cpp
         kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP.h
         jni.cpp)
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
