@@ -11,26 +11,26 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            compiler: gcc
+            compiler: g++
             version: 13.2.0
             binary: ./build/dptsp.dll
             upload_name: x86_64_dptsp.dll
             flag: -DCMAKE_CXX_FLAGS="-m32" -G 'MinGW Makefiles'
             bit: 32
           - os: windows-latest
-            compiler: gcc
+            compiler: g++
             version: 13.2.0
             binary: ./build/dptsp.dll
             upload_name: x64_dptsp.dll
             flag: -DCMAKE_CXX_FLAGS="-m64" -G 'MinGW Makefiles'
           - os: ubuntu-24.04
-            compiler: gcc-14
+            compiler: g++-14
             package: gcc-14 gcc-14-multilib g++-14-multilib libc6-dev-i386
             binary: ./build/libdptsp.so
             upload_name: x86_64_libdptsp.so
             flag: -DCMAKE_CXX_FLAGS="-m32"
           - os: ubuntu-24.04
-            compiler: gcc-14
+            compiler: g++-14
             package: gcc-14
             binary: ./build/libdptsp.so
             upload_name: x64_libdptsp.so
