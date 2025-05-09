@@ -36,6 +36,7 @@ jobs:
         shell: bash
         run: |
           sudo dpkg --add-architecture i386
+          sudo dpkg --add-architecture arm64
           sudo apt-get install g++-14 gcc-14 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-14-multilib g++-14-multilib linux-libc-dev libc6-dev-i386 g++-14-aarch64-linux-gnu  gcc-14-aarch64-linux-gnu linux-libc-dev
       - name: Build
         shell: bash
