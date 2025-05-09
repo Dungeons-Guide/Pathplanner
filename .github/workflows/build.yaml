@@ -34,7 +34,7 @@ jobs:
       - name: Install Dep
         shell: bash
         run: |
-          apt-get install g++-14 gcc-14 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-multilib g++-multilib libc6-dev-i386
+          sudo apt-get install g++-14 gcc-14 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-multilib g++-multilib libc6-dev-i386
       - name: Build
         shell: bash
         run: |
