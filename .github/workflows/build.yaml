@@ -19,10 +19,10 @@ jobs:
           - flag: -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++
             binary: ./build/libdptsp.so
             upload_name: x64_dptsp.dll
-          - flag: -DCMAKE_CXX_FLAGS="-m32"
+          - flag: -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_CXX_COMPILER=g++-14
             binary: ./build/libdptsp.so
             upload_name: x86_64_libdptsp.so
-          - flag: -DCMAKE_CXX_FLAGS="-m64"
+          - flag: -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_CXX_COMPILER=g++-14
             binary: ./build/libdptsp.so
             upload_name: x64_libdptsp.so
           - flag: -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++-14
