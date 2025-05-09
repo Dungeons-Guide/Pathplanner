@@ -89,39 +89,58 @@ struct Value {
     RoomStatus curr;
 };
 
-typedef std::function<pair<RoomStatus, double>(Vec3, int, int)> CostEvaluator;
+struct AwaitJava {
+    double result;
+    Vec3 coord;
+    int mechId;
+    int nodeId;
 
-struct Coroutine {
+    std::coroutine_handle<> handle;
+
+    bool await_ready() const noexcept {return false;}
+    void await_suspend(std::coroutine_handle<> h) {handle = h;}
+    pair<RoomStatus, double> await_resume() {return {RoomStatus{coord, mechId}, result}; }
+};
+
+struct TSPRoutine {
     struct promise_type {
-        double x, y, z;
-        int bitSet;
-        int node;
-
-        Coroutine get_return_object() {return {this}; }
-        suspend_always initial_suspend() {return {}; }
+        TSPRoutine get_return_object() {
+            return TSPRoutine{std::coroutine_handle<promise_type>::from_promise(*this)};
+        }
+        bool await_ready() const noexcept {return false;}
+        std::suspend_never initial_suspend() { return {}; }
+        std::suspend_always final_suspend() noexcept { return {}; }
+        void return_void() { }
+        void unhandled_exception() {}
     };
-    promise_type* promise;
+
+    std::coroutine_handle<promise_type> handle;
 };
 
 class TSP {
 private:
-    NodeMapping& mapping;
+    NodeMapping mapping;
     map<Key, Value> cost;
     Vec3 start;
     int stBitSet;
 
-    CostEvaluator eval;
-
     bool canVisit(Key key, int node);
 
+    TSPRoutine solveTSP();
 public:
-    TSP(NodeMapping &mapping, Vec3 start, CostEvaluator eval, int stBitset) : mapping(mapping) {
+    AwaitJava awaiter;
+    TSPRoutine routine;
+
+    TSP(NodeMapping mapping, Vec3 start, int stBitset) {
+        this->mapping = mapping;
         this->start = start;
-        this->eval = eval;
         this->stBitSet = stBitset;
+        routine = solveTSP();
+    }
+    ~TSP() {
+        routine.handle.destroy();
     }
 
-    void solveTSP();
     vector<int> getSolution(int goal);
 };
 

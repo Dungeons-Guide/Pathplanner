@@ -25,15 +25,20 @@ bool TSP::canVisit(Key key, int node) {
     return true;
 }
 
-void TSP::solveTSP() {
+TSPRoutine TSP::solveTSP() {
     queue<Key> toVisit;
     set<Key> visited;
+
     for (int i = 0; i < mapping.N; ++i) {
         if (!canVisit({{0,0}, -1}, i)) continue;
 
         VisitedSet v{0,0}; v.add(mapping,i);
         toVisit.emplace(v, i);
-        auto c = eval(start, 0, i);
+
+        awaiter.coord = start;
+        awaiter.mechId = stBitSet;
+        awaiter.nodeId = i;
+        auto c = co_await awaiter;
         cost[{v,i}] = {
                 c.second,
                 {{0,0}, -1},
@@ -46,11 +51,39 @@ void TSP::solveTSP() {
         Value& val = cost[top];
         toVisit.pop();
 
-        auto add = [&](int node) {
+//        auto add = [&](int node)  {
+//            VisitedSet copy = top.first;
+//            copy.add(mapping, node);
+//
+//            awaiter.coord = val.curr.pos;
+//            awaiter.mechId = val.curr.mechanicSet;
+//            awaiter.nodeId = node;
+//            auto c = co_await awaiter;
+//            Key newKey = {copy, node};
+//            auto& target = cost[newKey];
+//            if (target.cost < 0) {
+//                target = {val.cost + c.second, top, c.first};
+//                toVisit.push(newKey);
+//            } else {
+//                if (target.cost > val.cost + c.second)
+//                    target = {val.cost + c.second, top, c.first};
+//            }
+//        };
+
+        bool sanity = false;
+        for (int i = 0; i < mapping.N; i++) {
+            if (!mapping.sanity[i]) continue;
+            if (!canVisit(top, i)) continue;
+            sanity = true;
+
+            int node = i;
             VisitedSet copy = top.first;
             copy.add(mapping, node);
 
-            auto c = eval(val.curr.pos, val.curr.mechanicSet, node);
+            awaiter.coord = val.curr.pos;
+            awaiter.mechId = val.curr.mechanicSet;
+            awaiter.nodeId = node;
+            auto c = co_await awaiter;
             Key newKey = {copy, node};
             auto& target = cost[newKey];
             if (target.cost < 0) {
@@ -60,14 +93,7 @@ void TSP::solveTSP() {
                 if (target.cost > val.cost + c.second)
                     target = {val.cost + c.second, top, c.first};
             }
-        };
 
-        bool sanity = false;
-        for (int i = 0; i < mapping.N; i++) {
-            if (!mapping.sanity[i]) continue;
-            if (!canVisit(top, i)) continue;
-            sanity = true;
-            add(i);
             break;
         }
         if (sanity) continue;
@@ -78,9 +104,26 @@ void TSP::solveTSP() {
             if (mapping.sanity[i]) continue;
             if (!canVisit(top, i)) continue;
 
-            add(i);
+            int node = i;
+            VisitedSet copy = top.first;
+            copy.add(mapping, node);
+
+            awaiter.coord = val.curr.pos;
+            awaiter.mechId = val.curr.mechanicSet;
+            awaiter.nodeId = node;
+            auto c = co_await awaiter;
+            Key newKey = {copy, node};
+            auto& target = cost[newKey];
+            if (target.cost < 0) {
+                target = {val.cost + c.second, top, c.first};
+                toVisit.push(newKey);
+            } else {
+                if (target.cost > val.cost + c.second)
+                    target = {val.cost + c.second, top, c.first};
+            }
         }
     }
+    co_return;
 }
 
 vector<int> TSP::getSolution(int goalNode) {
@@ -93,7 +136,7 @@ vector<int> TSP::getSolution(int goalNode) {
             key = item.first;
         }
     }
-    if (minCost == INFINITY) return {};
+    if (minCost == INFINITY) return vector<int>(0);
     // backtrack!
     vector<int> sol;
     while (true) {

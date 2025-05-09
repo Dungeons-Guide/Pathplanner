@@ -30,7 +30,7 @@ void convert(JNIEnv* env, vector<ll>& dest, jlongArray arr) {
     env->ReleaseLongArrayElements(arr, intPtr, 0);
 }
 
-jintArray JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_runTSPNative(JNIEnv* env, jobject obj, int goal) {
+jlong JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_startCoroutine(JNIEnv* env, jobject obj) {
     auto clazz = env->GetObjectClass(obj);
 
     NodeMapping nodeMapping;
@@ -52,7 +52,7 @@ jintArray JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
     }
 
     int cnt = *std::max_element(nodeMapping.nodeType.begin(), nodeMapping.nodeType.end()) - 1;
-
+    if (cnt < 0) cnt = 0;
 
     nodeMapping.orMult.resize(cnt);
     nodeMapping.orCount.resize(cnt);
@@ -72,34 +72,41 @@ jintArray JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
     double startY = env->GetDoubleField(obj, env ->GetFieldID(clazz, "startY", "D"));
     double startZ = env->GetDoubleField(obj, env ->GetFieldID(clazz, "startZ", "D"));
 
-    auto method = env->GetMethodID(clazz, "evaluate", "(DDDII)Lkr/syeyoung/dungeonsguide/mod/dungeon/actions/route/DPTSP$EvalRes;");
+//    auto method = env->GetMethodID(clazz, "evaluate", "(DDDII)Lkr/syeyoung/dungeonsguide/mod/dungeon/actions/route/DPTSP$EvalRes;");
+//
+//    jclass  resClazz = env->FindClass("kr/syeyoung/dungeonsguide/mod/dungeon/actions/route/DPTSP$EvalRes");
+//
+//    auto methodResX = env->GetFieldID(resClazz, "x", "D");
+//    auto methodResY = env->GetFieldID(resClazz, "y", "D");
+//    auto methodResZ = env->GetFieldID(resClazz, "z", "D");
+//    auto methodResCost = env->GetFieldID(resClazz, "cost", "D");
+//    auto methodResMech = env->GetFieldID(resClazz, "mechanic", "I");
 
-    jclass  resClazz = env->FindClass("kr/syeyoung/dungeonsguide/mod/dungeon/actions/route/DPTSP$EvalRes");
+    TSP* tsp = new TSP(nodeMapping, Vec3{startX, startY, startZ}, stBitset);
+    return reinterpret_cast<jlong>(tsp);
+}
 
-    auto methodResX = env->GetFieldID(resClazz, "x", "D");
-    auto methodResY = env->GetFieldID(resClazz, "y", "D");
-    auto methodResZ = env->GetFieldID(resClazz, "z", "D");
-    auto methodResCost = env->GetFieldID(resClazz, "cost", "D");
-    auto methodResMech = env->GetFieldID(resClazz, "mechanic", "I");
-    CostEvaluator eval = [&](Vec3 vec, int mechanic, int node) {
-        auto res = env->CallObjectMethod(obj, method, vec[0], vec[1], vec[2], mechanic, node);
-        RoomStatus room = {
-                {
-                    env->GetDoubleField(res, methodResX),
-                    env->GetDoubleField(res, methodResY),
-                    env->GetDoubleField(res, methodResZ),
-                },
-                env->GetIntField(res, methodResMech)
-        };
-        double d = env->GetDoubleField(res, methodResCost);
-        env->DeleteLocalRef(res);
-        return pair{room, d};
-    };
+JNIEXPORT jboolean JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_resumeCoroutine
+        (JNIEnv * env, jobject obj, jlong handle_addr, jdouble x, jdouble y, jdouble z, jint mech, jdouble cost) {
+    auto* handle = reinterpret_cast<TSP*>(handle_addr);
+    if (!handle) {
+        return JNI_FALSE;
+    }
+    if (handle->routine.handle.done()) return JNI_FALSE;
+    handle->awaiter.mechId = mech;
+    handle->awaiter.coord = {x, y, z};
+    handle->awaiter.result = cost;
+    handle->awaiter.handle.resume();
+    return JNI_TRUE;
+}
 
-    TSP tsp(nodeMapping, Vec3{startX, startY, startZ}, eval, stBitset);
-
-    tsp.solveTSP();
-    vector<int> res = tsp.getSolution(goal);
+JNIEXPORT jintArray JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getResult
+        (JNIEnv * env, jobject obj, jlong handle_addr, jint goal) {
+    auto* handle = reinterpret_cast<TSP*>(handle_addr);
+    if (!handle) {
+        return nullptr;
+    }
+    vector<int> res = handle->getSolution(goal);
 
     jint resArray[res.size()];
     for (int i = 0; i < res.size(); ++i)
@@ -107,4 +114,34 @@ jintArray JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
     auto arr = env->NewIntArray(res.size());
     env->SetIntArrayRegion(arr, 0, res.size(), resArray);
     return arr;
+}
+JNIEXPORT jdouble JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getX
+        (JNIEnv *, jobject, jlong handle_addr) {
+    return reinterpret_cast<TSP*>(handle_addr)->awaiter.coord[0];
+}
+
+JNIEXPORT jdouble JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getY
+        (JNIEnv *, jobject, jlong handle_addr) {
+    return reinterpret_cast<TSP*>(handle_addr)->awaiter.coord[1];
+}
+
+JNIEXPORT jdouble JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getZ
+        (JNIEnv *, jobject, jlong handle_addr) {
+    return reinterpret_cast<TSP*>(handle_addr)->awaiter.coord[2];
+}
+
+JNIEXPORT jint JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getNode
+        (JNIEnv *, jobject, jlong handle_addr) {
+    return reinterpret_cast<TSP*>(handle_addr)->awaiter.nodeId;
+}
+
+JNIEXPORT jint JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getMech
+        (JNIEnv *, jobject, jlong handle_addr) {
+    return reinterpret_cast<TSP*>(handle_addr)->awaiter.mechId;
+}
+
+JNIEXPORT void JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_destoryCoroutine
+        (JNIEnv * env, jobject obj, jlong handle_addr) {
+    auto* handle = reinterpret_cast<TSP*>(handle_addr);
+    delete handle;
 }

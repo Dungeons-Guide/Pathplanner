@@ -9,11 +9,75 @@ extern "C" {
 #endif
 /*
  * Class:     kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
- * Method:    runTSPNative
- * Signature: (I)[I
+ * Method:    startCoroutine
+ * Signature: ()J
  */
-JNIEXPORT jintArray JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_runTSPNative
-        (JNIEnv *, jobject, jint);
+JNIEXPORT jlong JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_startCoroutine
+        (JNIEnv *, jobject);
+
+/*
+ * Class:     kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
+ * Method:    resumeCoroutine
+ * Signature: (JDDDID)Z
+ */
+JNIEXPORT jboolean JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_resumeCoroutine
+        (JNIEnv *, jobject, jlong, jdouble, jdouble, jdouble, jint, jdouble);
+
+/*
+ * Class:     kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
+ * Method:    getX
+ * Signature: (J)D
+ */
+JNIEXPORT jdouble JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getX
+        (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
+ * Method:    getY
+ * Signature: (J)D
+ */
+JNIEXPORT jdouble JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getY
+        (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
+ * Method:    getZ
+ * Signature: (J)D
+ */
+JNIEXPORT jdouble JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getZ
+        (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
+ * Method:    getNode
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getNode
+        (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
+ * Method:    getMech
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getMech
+        (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
+ * Method:    getResult
+ * Signature: (JI)[I
+ */
+JNIEXPORT jintArray JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getResult
+        (JNIEnv *, jobject, jlong, jint);
+
+/*
+ * Class:     kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP
+ * Method:    destoryCoroutine
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_destoryCoroutine
+        (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus
 }
