@@ -16,6 +16,7 @@ jobs:
             binary: ./build/dptsp.dll
             upload_name: x86_64_dptsp.dll
             flag: -DCMAKE_CXX_FLAGS="-m32" -G 'MinGW Makefiles'
+            bit: 32
           - os: windows-latest
             compiler: gcc-13
             version: 13.2.0
@@ -41,6 +42,11 @@ jobs:
       - name: Install dependencies (Windows)
         if: runner.os == 'Windows' && matrix.name
         run: choco install ${{ matrix.name }} --version ${{ matrix.version }}
+      - name: Set up MinGW
+        if: runner.os == 'Windows' && matrix.bit == 32
+        uses: egor-tensin/setup-mingw@v2
+        with:
+          platform: x86
       - name: Install dependencies (macOS)
         if: runner.os == 'macOS' && matrix.package
         run: brew install ${{ matrix.package }}
@@ -51,7 +57,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPULER=${{ matrix.compiler}} ${{matrix.flag}} ..
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=${{ matrix.compiler}} ${{matrix.flag}} ..
           cmake --build ./
 
       - name: Upload Build Artifact
