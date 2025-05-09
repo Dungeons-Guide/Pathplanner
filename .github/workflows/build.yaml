@@ -16,26 +16,26 @@ jobs:
             version: 13.2.0
             binary: ./build/dptsp.dll
             upload_name: x86_64_dptsp.dll
-            flag: -CMAKE_CXX_FLAGS="-m32"
+            flag: -DCMAKE_CXX_FLAGS="-m32"
           - os: windows-latest
             compiler: gcc-13
             name: mingw-w64
             version: 13.2.0
             binary: ./build/dptsp.dll
             upload_name: x64_dptsp.dll
-            flag: -CMAKE_CXX_FLAGS="-m64"
+            flag: -DCMAKE_CXX_FLAGS="-m64"
           - os: ubuntu-24.04
             compiler: gcc-14
             package: gcc-14
             binary: ./build/libdptsp.so
             upload_name: x86_64_libdptsp.so
-            flag: -CMAKE_CXX_FLAGS="-m32"
+            flag: -DCMAKE_CXX_FLAGS="-m32"
           - os: ubuntu-24.04
             compiler: gcc-14
             package: gcc-14
             binary: ./build/libdptsp.so
             upload_name: x64_libdptsp.so
-            flag: -CMAKE_CXX_FLAGS="-m64"
+            flag: -DCMAKE_CXX_FLAGS="-m64"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
