@@ -61,9 +61,8 @@ jobs:
           cd build
           cmake -DCMAKE_BUILD_TYPE=Release ..  -G "MinGW Makefiles"
           cmake --build ./
-
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4.6.2
         with:
           name: aarch64_dptsp.dll
-          path: ./build/aarch64_dptsp.dll
+          path: ./build/libdptsp.dll
