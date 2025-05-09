@@ -14,10 +14,10 @@ jobs:
       matrix:
         include:
           - flag: -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++
-            binary: ./build/dptsp.dll
+            binary: ./build/libdptsp.so
             upload_name: x86_64_dptsp.dll
           - flag: -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++
-            binary: ./build/dptsp.dll
+            binary: ./build/libdptsp.so
             upload_name: x64_dptsp.dll
           - os: ubuntu-24.04
             flag: -DCMAKE_CXX_FLAGS="-m32"
@@ -27,6 +27,10 @@ jobs:
             flag: -DCMAKE_CXX_FLAGS="-m64"
             binary: ./build/libdptsp.so
             upload_name: x64_libdptsp.so
+          - os: ubuntu-24.04
+            flag: -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+            binary: ./build/libdptsp.so
+            upload_name: aarch64_libdptsp.so
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -34,7 +38,7 @@ jobs:
       - name: Install Dep
         shell: bash
         run: |
-          sudo apt-get install g++-14 gcc-14 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-multilib g++-multilib libc6-dev-i386
+          sudo apt-get install g++-14 gcc-14 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-multilib g++-multilib libc6-dev-i386 aarch64-linux-gnu-g++
       - name: Build
         shell: bash
         run: |
