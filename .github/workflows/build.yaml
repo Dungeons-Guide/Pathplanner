@@ -43,7 +43,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          ln -s /usr/include/asm-generic /usr/include/asm
+          sudo ln -s /usr/include/asm-generic /usr/include/asm
           cmake -DCMAKE_BUILD_TYPE=Release ${{matrix.flag}} ..
           cmake --build ./
 
