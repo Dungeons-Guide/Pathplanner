@@ -56,8 +56,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - {arch: "x86_64", flag: "-m64", name: "x86_64_dptsp.dll", path: "build/dptsp.dll"}
-          - {arch: "i686", flag: "-m32", name: "x86_dptsp.dll", path: "build/dptsp.dll"}
+          - {arch: "x86_64", flag: "-DCMAKE_CXX_FLAGS=\"-m64\"", name: "x86_64_dptsp.dll", path: "build/dptsp.dll", system: "MINGW64"}
+          - {arch: "i686", flag: "-DCMAKE_CXX_FLAGS=\"-m32\"", name: "x86_dptsp.dll", path: "build/dptsp.dll", system: "MINGW32"}
     runs-on: "windows-latest"
     steps:
       - name: Checkout repository
@@ -65,7 +65,7 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           update: true
-          msystem: MINGW32
+          msystem: ${{matrix.system}}
           install: >-
             make
             cmake
