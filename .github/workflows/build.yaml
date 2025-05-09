@@ -11,7 +11,7 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            compiler: g++
+            compiler: i686-w64-mingw32-g++
             version: 13.2.0
             binary: ./build/dptsp.dll
             upload_name: x86_64_dptsp.dll
