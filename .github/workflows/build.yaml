@@ -69,7 +69,6 @@ jobs:
           install: >-
             make
             cmake
-            mingw-w64-${{matrix.arch}}-toolchain
       - shell: msys2 {0}
         name: "Build"
         run: |
