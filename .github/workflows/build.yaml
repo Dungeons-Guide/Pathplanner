@@ -14,13 +14,20 @@ jobs:
             compiler: gcc-14
             name: mingw-w64
             version: 11.2.0
-            binary: ./dptsp.dll
+            binary: ./build/dptsp.dll
             upload_name: x86_64_dptsp.dll
           - os: ubuntu-24.04
             compiler: gcc-14
             package: gcc-14
-            binary: ./libdptsp.so
-            upload_name: x86_64_libdptsp.so
+            binary: ./build/libdptsp.so
+            upload_name: build/x86_64_libdptsp.so
+            flag: -DCFLAGS="-m32" -DCXXFLAGS="-m32"
+          - os: ubuntu-24.04
+            compiler: gcc-14
+            package: gcc-14
+            binary: ./build/libdptsp.so
+            upload_name: build/x64_libdptsp.so
+            flag: -DCFLAGS="-m64" -DCXXFLAGS="-m64"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
