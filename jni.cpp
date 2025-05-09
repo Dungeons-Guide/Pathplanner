@@ -68,7 +68,7 @@ jlong JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_sta
         mult *= nodeMapping.orCount[i];
     }
 
-    auto stBitset = reinterpret_cast<jint>(env ->GetIntField(obj, env->GetFieldID(clazz, "stBitset", "I")));
+    auto stBitset = env ->GetIntField(obj, env->GetFieldID(clazz, "stBitset", "I"));
     double startX = env->GetDoubleField(obj, env ->GetFieldID(clazz, "startX", "D"));
     double startY = env->GetDoubleField(obj, env ->GetFieldID(clazz, "startY", "D"));
     double startZ = env->GetDoubleField(obj, env ->GetFieldID(clazz, "startZ", "D"));
@@ -109,11 +109,11 @@ JNIEXPORT jintArray JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_r
     }
     vector<int> res = handle->getSolution(goal);
 
-    jint resArray[res.size()];
+    unique_ptr<jint[]> resArray = make_unique<jint[]>(res.size());
     for (int i = 0; i < res.size(); ++i)
         resArray[i] = res[i];
     auto arr = env->NewIntArray(res.size());
-    env->SetIntArrayRegion(arr, 0, res.size(), resArray);
+    env->SetIntArrayRegion(arr, 0, res.size(), resArray.get());
     return arr;
 }
 JNIEXPORT jdouble JNICALL Java_kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP_getX
