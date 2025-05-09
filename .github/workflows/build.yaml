@@ -35,7 +35,7 @@ jobs:
       - name: Install Dep
         shell: bash
         run: |
-          sudo apt-get install g++-14 gcc-14 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-14-multilib g++-14-multilib libc6-dev-i386 g++-14-aarch64-linux-gnu  gcc-14-aarch64-linux-gnu
+          sudo apt-get install g++-14 gcc-14 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-14-multilib g++-14-multilib linux-libc-dev libc6-dev-i386 g++-14-aarch64-linux-gnu  gcc-14-aarch64-linux-gnu linux-libc-dev
       - name: Build
         shell: bash
         run: |
@@ -65,4 +65,4 @@ jobs:
         uses: actions/upload-artifact@v4.6.2
         with:
           name: aarch64_dptsp.dll
-          path: ./build/libdptsp.dll
+          path: ./build/Release/dptsp.dll
