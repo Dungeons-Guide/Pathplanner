@@ -78,7 +78,7 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=Release ${{matrix.flag}} ..
           cmake --build ./
       - name: Upload artifacts
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: ${{matrix.name}}
           path: ${{matrix.path}}
