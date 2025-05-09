@@ -6,49 +6,79 @@ on:
       - main
 
 jobs:
-  build:
-    defaults:
-      run:
-        shell: bash
+#  build:
+#    defaults:
+#      run:
+#        shell: bash
+#    strategy:
+#      matrix:
+#        include:
+#          - os: windows-latest
+#            flag: -DCMAKE_CXX_FLAGS="-m32" -G 'MinGW Makefiles'
+#            binary: ./build/dptsp.dll
+#            upload_name: x86_64_dptsp.dll
+#            compiler: gcc
+#          - os: windows-latest
+#            flag: -DCMAKE_CXX_FLAGS="-m64" -G 'MinGW Makefiles'
+#            binary: ./build/dptsp.dll
+#            upload_name: x64_dptsp.dll
+#          - os: ubuntu-24.04
+#            flag: -DCMAKE_CXX_FLAGS="-m32"
+#            binary: ./build/libdptsp.so
+#            upload_name: x86_64_libdptsp.so
+#          - os: ubuntu-24.04
+#            flag: -DCMAKE_CXX_FLAGS="-m64"
+#            binary: ./build/libdptsp.so
+#            upload_name: x64_libdptsp.so
+#    runs-on: ${{ matrix.os }}
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v2
+#      - name: Setup Cpp
+#        uses: aminya/setup-cpp@v1
+#        with:
+#          compiler: gcc-14
+#          cmake: true
+#      - name: Build
+#        shell: bash
+#        run: |
+#          mkdir build
+#          cd build
+#          cmake -DCMAKE_BUILD_TYPE=Release ${{matrix.flag}} ..
+#          cmake --build ./
+#
+#      - name: Upload Build Artifact
+#        uses: actions/upload-artifact@v4.6.2
+#        with:
+#          name: ${{ matrix.upload_name }}
+#          path: ${{ matrix.binary }}
+  windows:
     strategy:
       matrix:
         include:
-          - os: windows-latest
-            flag: -DCMAKE_CXX_FLAGS="-m32" -G 'MinGW Makefiles'
-            binary: ./build/dptsp.dll
-            upload_name: x86_64_dptsp.dll
-            compiler: gcc
-          - os: windows-latest
-            flag: -DCMAKE_CXX_FLAGS="-m64" -G 'MinGW Makefiles'
-            binary: ./build/dptsp.dll
-            upload_name: x64_dptsp.dll
-          - os: ubuntu-24.04
-            flag: -DCMAKE_CXX_FLAGS="-m32"
-            binary: ./build/libdptsp.so
-            upload_name: x86_64_libdptsp.so
-          - os: ubuntu-24.04
-            flag: -DCMAKE_CXX_FLAGS="-m64"
-            binary: ./build/libdptsp.so
-            upload_name: x64_libdptsp.so
-    runs-on: ${{ matrix.os }}
+          - {arch: "x86_64", flag: "-m64", name: "x86_64_dptsp.dll", path: "build/dptsp.dll"}
+          - {arch: "i686", flag: "-m32", name: "x86_dptsp.dll", path: "build/dptsp.dll"}
+    runs-on: "windows-latest"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Setup Cpp
-        uses: aminya/setup-cpp@v1
+      - uses: msys2/setup-msys2@v2
         with:
-          compiler: gcc-14
-          cmake: true
-      - name: Build
-        shell: bash
+          update: true
+          msystem: MINGW32
+          install: >-
+            make
+            cmake
+            mingw-w64-${{matrix.arch}}-toolchain
+      - shell: msys2 {0}
+        name: "Build"
         run: |
           mkdir build
           cd build
           cmake -DCMAKE_BUILD_TYPE=Release ${{matrix.flag}} ..
           cmake --build ./
-
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4.6.2
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1.0.0
         with:
-          name: ${{ matrix.upload_name }}
-          path: ${{ matrix.binary }}
+          name: ${{matrix.name}}
+          path: ${{path}}
