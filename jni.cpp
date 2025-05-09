@@ -4,6 +4,7 @@
 
 #include "kr_syeyoung_dungeonsguide_mod_dungeon_actions_route_DPTSP.h"
 #include "tsp.h"
+#include <algorithm>
 
 void convert(JNIEnv* env, vector<int>& dest, jintArray arr) {
     int len = env->GetArrayLength(arr);
