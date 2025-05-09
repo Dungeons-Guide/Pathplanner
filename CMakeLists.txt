@@ -6,6 +6,8 @@ set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 set(JAVA_AWT_LIBRARY NotNeeded)
 set(JAVA_AWT_INCLUDE_PATH NotNeeded)
 
+add_compile_options(-fcoroutines)
+
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 message(JNI_INCLUDE_DIRs="${JNI_INCLUDE_DIRS}")

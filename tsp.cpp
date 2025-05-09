@@ -7,6 +7,7 @@
 #include <map>
 #include <set>
 #include "tsp.h"
+#include <cmath>
 
 
 bool TSP::canVisit(Key key, int node) {
