@@ -8,7 +8,7 @@
 #include <set>
 #include "tsp.h"
 #include <cmath>
-
+#include <algorithm>
 
 bool TSP::canVisit(Key key, int node) {
     if (mapping.nodeType[node] == 0) return false; // don't visit.
