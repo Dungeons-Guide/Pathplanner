@@ -12,14 +12,12 @@ jobs:
         include:
           - os: windows-latest
             compiler: gcc-13
-            name: mingw
             version: 13.2.0
             binary: ./build/dptsp.dll
             upload_name: x86_64_dptsp.dll
             flag: -DCMAKE_CXX_FLAGS="-m32" -G 'MinGW Makefiles'
           - os: windows-latest
             compiler: gcc-13
-            name: mingw
             version: 13.2.0
             binary: ./build/dptsp.dll
             upload_name: x64_dptsp.dll
