@@ -1,0 +1,48 @@
+name: Build Binaries for Multiple Architectures
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            compiler: gcc-14
+            name: mingw-w64
+            version: 11.2.0
+            binary: ./dptsp.dll
+            upload_name: x86_64_dptsp.dll
+          - os: ubuntu-24.04
+            compiler: gcc-14
+            package: gcc-14
+            binary: ./libdptsp.so
+            upload_name: x86_64_libdptsp.so
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install dependencies (Windows)
+        if: runner.os == "Windows" && matrix.name
+        run: choco install ${{ matrix.name }} --version ${{ matrix.version }}
+      - name: Install dependencies (macOS)
+        if: runner.os == "macOS" ** matrix.package
+        run: brew install ${{ matrix.package }}
+      - name: Install dependencies (Linux)
+        if: runner.os == "Linux"
+        run: sudo apt-get install ${{ matrix.package }}
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPULER=${{ matrix.compiler}} ..
+          cmake --build ./
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.upload_name }}
+          path: ${{ matrix.binary }}
