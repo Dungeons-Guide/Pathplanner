@@ -20,6 +20,7 @@ jobs:
             upload_name: x86_64_dptsp.dll
             flag: -DCMAKE_CXX_FLAGS="-m32" -G 'MinGW Makefiles'
             sys: mingw32
+            shell: msys2
           - os: windows-latest
             compiler: g++
             version: 13.2.0
@@ -27,18 +28,21 @@ jobs:
             upload_name: x64_dptsp.dll
             flag: -DCMAKE_CXX_FLAGS="-m64" -G 'MinGW Makefiles'
             sys: mingw64
+            shell: msys2
           - os: ubuntu-24.04
             compiler: g++-14
             package: gcc-14 gcc-14-multilib g++-14-multilib libc6-dev-i386
             binary: ./build/libdptsp.so
             upload_name: x86_64_libdptsp.so
             flag: -DCMAKE_CXX_FLAGS="-m32"
+            shell: bash
           - os: ubuntu-24.04
             compiler: g++-14
             package: gcc-14
             binary: ./build/libdptsp.so
             upload_name: x64_libdptsp.so
             flag: -DCMAKE_CXX_FLAGS="-m64"
+            shell: bash
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
@@ -57,6 +61,7 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get install ${{ matrix.package }}
       - name: Build
+        shell: ${{ matrix.shell }}
         run: |
           mkdir build
           cd build
