@@ -60,7 +60,7 @@ jobs:
           mkdir build
           cd build
           cmake -DCMAKE_BUILD_TYPE=Release -A ARM64 ..  
-          cmake --build ./
+          cmake --build ./   --config Release
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4.6.2
         with:

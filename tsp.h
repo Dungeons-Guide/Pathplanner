@@ -9,6 +9,7 @@
 #include <functional>
 #include <map>
 #include <coroutine>
+#include <array>
 
 using namespace std;
 typedef long long ll;
