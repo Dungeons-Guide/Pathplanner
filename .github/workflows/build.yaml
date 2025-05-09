@@ -20,13 +20,13 @@ jobs:
             compiler: gcc-14
             package: gcc-14
             binary: ./build/libdptsp.so
-            upload_name: build/x86_64_libdptsp.so
+            upload_name: x86_64_libdptsp.so
             flag: -DCFLAGS="-m32" -DCXXFLAGS="-m32"
           - os: ubuntu-24.04
             compiler: gcc-14
             package: gcc-14
             binary: ./build/libdptsp.so
-            upload_name: build/x64_libdptsp.so
+            upload_name: x64_libdptsp.so
             flag: -DCFLAGS="-m64" -DCXXFLAGS="-m64"
     runs-on: ${{ matrix.os }}
     steps:
