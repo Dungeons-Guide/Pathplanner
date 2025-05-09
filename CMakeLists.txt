@@ -8,10 +8,6 @@ set(JAVA_AWT_INCLUDE_PATH NotNeeded)
 
 add_compile_options(-fcoroutines)
 
-if(MSVC)
-    add_compile_options(/await)
-endif()
-
 
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
