@@ -69,6 +69,11 @@ jobs:
           install: >-
             make
             cmake
+            mingw-w64-${{matrix.arch}}-toolchain
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu' # See 'Supported distributions' for available options
+          java-version: '8'
       - shell: msys2 {0}
         name: "Build"
         run: |
