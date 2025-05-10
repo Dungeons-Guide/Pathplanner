@@ -13,10 +13,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - flag: -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++
+          - flag: -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++ -DCMAKE_CXX_FLAGS="-static"
             binary: ./build/libdptsp.so
             upload_name: x86_dptsp.dll
-          - flag: -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++
+          - flag: -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ -DCMAKE_CXX_FLAGS="-static"
             binary: ./build/libdptsp.so
             upload_name: x86_64_dptsp.dll
           - flag: -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_CXX_COMPILER=g++-14
@@ -37,7 +37,7 @@ jobs:
         run: |
           sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install g++-14 gcc-14 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-14-multilib g++-14-multilib linux-libc-dev libc6-dev-i386 g++-14-aarch64-linux-gnu  gcc-14-aarch64-linux-gnu linux-libc-dev
+          sudo apt-get install g++-14 gcc-14 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-14-multilib g++-14-multilib linux-libc-dev libc6-i386 libc6-dev-i386 g++-14-aarch64-linux-gnu  gcc-14-aarch64-linux-gnu linux-libc-dev
       - name: Build
         shell: bash
         run: |
